@@ -1,0 +1,132 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="layout">
+<div class="container">
+
+<div class="layout__box">
+
+<div class="layout__boxHeader">
+<div class="layout__boxTitle">
+<a href="{% url 'blogs' %}">
+←
+</a>
+<h3>Create Blog</h3>
+</div>
+</div>
+
+<div class="layout__body">
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<div class="form__group">
+<label>Blog Title</label>
+<input type="text" name="title" required>
+</div>
+
+<div class="form__group">
+<label>Content</label>
+
+<div id="editor"></div>
+
+<textarea name="content" id="content" hidden></textarea>
+
+</div>
+
+<div class="form__action">
+<a class="btn btn--dark" href="{% url 'blogs' %}">Cancel</a>
+<button class="btn btn--main">Publish Blog</button>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.querySelector("form");
+  const contentField = document.getElementById("content");
+
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    placeholder: "Start writing your blog...",
+    modules: {
+      toolbar: {
+        container: [
+          ['bold', 'italic', 'underline'],
+          ['link', 'image', 'video'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+        ],
+        handlers: {
+          image: imageHandler
+        }
+      }
+    }
+  });
+
+  function imageHandler() {
+    const input = document.createElement('input');
+    input.type = "file";
+    input.accept = "image/*";
+    input.click();
+
+    input.onchange = async () => {
+
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/upload-blog-media/", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken")
+        }
+      });
+
+      const data = await response.json();
+
+      const range = quill.getSelection(true);
+      quill.insertEmbed(range.index, "image", data.url);
+
+    };
+  }
+
+  form.addEventListener("submit", function () {
+
+    const html = quill.root.innerHTML;
+
+    console.log("Submitting content:", html);
+
+    contentField.value = html;
+
+  });
+
+
+</script>
+
+</main>
+
+{% endblock %}

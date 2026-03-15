@@ -1,0 +1,98 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="layout">
+<div class="container">
+
+<!-- Topics -->
+<div class="topics">
+<div class="topics__header">
+<h2>Browse Topics</h2>
+</div>
+
+<ul class="topics__list">
+
+<li>
+<a href="{% url 'blogs' %}" class="active">All Blogs</a>
+</li>
+
+{% for topic in topics %}
+<li>
+<a href="{% url 'blogs' %}?q={{topic.name}}">
+{{topic.name}}
+</a>
+</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<!-- BLOG LIST -->
+<div class="roomList">
+
+<div class="roomList__header">
+
+<div>
+<h2>Study Blogs</h2>
+<p>{{blogs.count}} Blogs available</p>
+</div>
+
+<a class="btn btn--main" href="{% url 'create-blog' %}">
+Create Blog
+</a>
+
+</div>
+
+{% for blog in blogs %}
+
+<div class="roomListRoom">
+
+<div class="roomListRoom__header">
+
+<a href="{% url 'user-profile' blog.author.id %}" class="roomListRoom__author">
+
+<div class="avatar avatar--small">
+<img src="{{blog.author.avatar.url}}">
+</div>
+
+<span>@{{blog.author.username}}</span>
+
+</a>
+
+<div class="roomListRoom__actions">
+<span>{{blog.created|timesince}} ago</span>
+</div>
+
+</div>
+
+
+<div class="roomListRoom__content">
+
+<a href="{% url 'blog' blog.id %}">
+{{blog.title}}
+</a>
+
+<p>{{blog.content|striptags|truncatewords:25}}</p>
+
+</div>
+
+{% if blog.image %}
+<img src="{{ blog.image.url }}">
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<!-- Activities -->
+{% include 'base/activity_component.html' %}
+
+</div>
+</main>
+
+{% endblock %}

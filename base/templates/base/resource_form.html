@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="layout">
+<div class="container">
+
+<div class="layout__box">
+
+<div class="layout__boxHeader">
+<div class="layout__boxTitle">
+<a href="{% url 'room' room.id %}">←</a>
+<h3>Add Resource</h3>
+</div>
+</div>
+
+<div class="layout__body">
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="form__group">
+<label>Title</label>
+<input type="text" name="title" required>
+</div>
+
+<div class="form__group">
+<label>Upload File</label>
+<input type="file" name="file">
+</div>
+
+<div class="form__group">
+<label>External Link</label>
+<input type="url" name="link">
+</div>
+
+<div class="form__action">
+<a class="btn btn--dark" href="{% url 'room' room.id %}">Cancel</a>
+<button class="btn btn--main">Add Resource</button>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+</main>
+
+{% endblock %}

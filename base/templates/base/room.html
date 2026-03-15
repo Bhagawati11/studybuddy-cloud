@@ -70,7 +70,18 @@
             rerum consectetur, voluptatem repudiandae eum ea porro cupiditate provident nulla, deserunt, ab ipsum
             corporis laboriosam deleniti molestias?
           </div> -->
-          <span class="room__topics">{{room.topic}}</span>
+
+          <div class="room__topicRow">
+
+<span class="room__topics">{{room.topic}}</span>
+
+<a class="btn btn--main resource-btn"
+   href="{% url 'room-resources' room.id %}">
+   View Resources
+</a>
+
+</div>
+
         </div>
 
         <div class="room__conversation">
@@ -112,14 +123,63 @@
         </div>
 
       </div>
+
       <div class="room__message">
-        <form action="" method="POST">
-          {% csrf_token %}
-          <input name="body" placeholder="Write your message here..." />
-        </form>
-      </div>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="chat-input">
+
+<div class="attach-wrapper">
+
+<button type="button" class="attach-btn" onclick="toggleMenu()">+</button>
+
+<div class="attach-menu" id="attachMenu">
+
+<a href="{% url 'add-resource' room.id %}">📄 Upload Notes</a>
+
+<a href="{% url 'add-resource' room.id %}">🔗 Share Link</a>
+
+<a href="{% url 'add-resource' room.id %}">🎥 Upload Video</a>
+
+</div>
+
+</div>
+
+<input name="body" placeholder="Write your message here..." />
+
+</div>
+
+</form>
+
+</div>
     </div>
     <!-- Room End -->
+
+    <div class="room__resources">
+
+
+{% for resource in resources %}
+
+<div class="resource-item">
+
+<p>{{resource.title}}</p>
+
+{% if resource.file %}
+<a href="{{resource.file.url}}" target="_blank">Download</a>
+{% endif %}
+
+{% if resource.link %}
+<a href="{{resource.link}}" target="_blank">Open Link</a>
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+</div>
 
     <!--   Start -->
     <div class="participants">
@@ -142,4 +202,29 @@
   </div>
 </main>
 <script src="script.js"></script>
+<script>
+
+function toggleMenu() {
+
+  const menu = document.getElementById("attachMenu");
+
+  if(menu.style.display === "block"){
+      menu.style.display = "none";
+  } else {
+      menu.style.display = "block";
+  }
+
+}
+
+document.addEventListener("click", function(e){
+
+  const menu = document.getElementById("attachMenu");
+
+  if(!e.target.closest(".attach-wrapper")){
+      menu.style.display = "none";
+  }
+
+});
+
+</script>
 {% endblock content %}

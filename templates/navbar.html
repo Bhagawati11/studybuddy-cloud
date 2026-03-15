@@ -16,8 +16,12 @@
                 <input name="q" placeholder="Search for posts" />
             </label>
         </form>
+         <a href="{% url 'blogs' %}" class="btn btn--pill">
+                Blogs
+             </a>
         <nav class="header__menu">
 
+           
 
             <!-- Logged In -->
             {% if request.user.is_authenticated %}

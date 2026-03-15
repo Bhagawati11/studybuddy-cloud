@@ -342,6 +342,9 @@ a {
 .header__menu {
   margin-left: auto;
   position: relative;
+  display:flex;
+  align-items:center;
+  gap:2rem;
 }
 
 .header__menu a {
@@ -1162,4 +1165,60 @@ a {
   font-weight: 500;
   color: var(--color-main);
   font-weight: 1.4rem;
+}
+
+
+.header__menuItem {
+  margin-right: 2rem;
+  font-weight: 500;
+  color: var(--color-light-gray);
+}
+
+.header__menuItem:hover {
+  color: var(--color-main);
+}
+
+/* ===== QUILL EDITOR DARK THEME ===== */
+
+/* Main editor box */
+#editor {
+  background: var(--color-dark);
+  color: var(--color-light);
+}
+
+/* Toolbar */
+.ql-toolbar.ql-snow {
+  background: var(--color-dark-light);
+  border: 1px solid var(--color-dark-light);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+/* Editor container */
+.ql-container.ql-snow {
+  border: 1px solid var(--color-dark-light);
+  border-radius: 0 0 6px 6px;
+  min-height: 300px;
+  font-size: 1.6rem;
+}
+
+/* Actual writing area */
+.ql-editor {
+  min-height: 450px;
+  color: var(--color-light);
+}
+
+/* Toolbar icons */
+.ql-toolbar.ql-snow button svg {
+  fill: var(--color-light-gray);
+}
+
+/* Hover effect */
+.ql-toolbar.ql-snow button:hover svg {
+  fill: var(--color-main);
+}
+
+/* Active button */
+.ql-toolbar.ql-snow button.ql-active svg {
+  fill: var(--color-main);
 }

@@ -1,0 +1,93 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="layout layout--1">
+
+<div class="container">
+
+<div class="room">
+
+<div class="room__top">
+<div class="room__topLeft">
+
+<a href="{% url 'blogs' %}">
+←
+</a>
+
+<h3>Blog</h3>
+
+</div>
+</div>
+
+<div class="room__box">
+
+<div class="room__header">
+
+<div class="room__info">
+<h3>{{ blog.title }}</h3>
+<span>{{ blog.created|timesince }} ago</span>
+</div>
+
+<div class="room__hosted">
+<p>Written by</p>
+
+<a href="{% url 'user-profile' blog.author.id %}" class="room__author">
+
+<div class="avatar avatar--small">
+<img src="{{ blog.author.avatar.url }}">
+</div>
+
+<span>@{{ blog.author.username }}</span>
+
+</a>
+
+</div>
+
+</div>
+
+<div class="room__conversation">
+
+<div class="threads">
+
+<div class="thread">
+
+<div class="thread__details">
+
+{{ blog.content|safe }}
+
+{% if blog.image %}
+<img src="{{ blog.image.url }}" style="margin-top:20px;border-radius:8px;">
+{% endif %}
+
+{% if blog.video %}
+<video controls width="100%" style="margin-top:20px">
+<source src="{{ blog.video.url }}">
+</video>
+{% endif %}
+
+{% if blog.link %}
+<p style="margin-top:20px">
+<a href="{{ blog.link }}" target="_blank">
+🔗 {{ blog.link }}
+</a>
+</p>
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+{% endblock %}

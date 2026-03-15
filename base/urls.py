@@ -19,4 +19,11 @@ urlpatterns = [
 
     path('topics/', views.topicsPage, name="topics"),
     path('activity/', views.activityPage, name="activity"),
+
+    path('blogs/', views.blogs, name="blogs"),
+    path('create-blog/', views.createBlog, name="create-blog"),
+    path('blog/<str:pk>/', views.blogDetail, name="blog"),
+    path('upload-blog-media/', views.upload_blog_media, name="upload-blog-media"),
+    path('room/<str:pk>/add-resource/', views.addResource, name="add-resource"),
+    path('room/<str:pk>/resources/', views.roomResources, name="room-resources"),
 ]

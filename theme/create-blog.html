@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="layout">
+  <div class="container">
+
+    <div class="room">
+
+      <div class="room__top">
+        <div class="room__topLeft">
+          <h3>Create Blog</h3>
+        </div>
+      </div>
+
+      <div class="room__box">
+
+        <form method="POST" enctype="multipart/form-data">
+
+          {% csrf_token %}
+
+          <label>Title</label>
+          <input type="text" name="title" required>
+
+          <label>Content</label>
+          <textarea name="content"></textarea>
+
+          <label>Image</label>
+          <input type="file" name="image">
+
+          <label>Video</label>
+          <input type="file" name="video">
+
+          <label>External Link</label>
+          <input type="url" name="link">
+
+          <button class="btn btn--main" type="submit">
+            Publish Blog
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+{% endblock %}

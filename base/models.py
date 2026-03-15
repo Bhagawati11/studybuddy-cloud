@@ -7,7 +7,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, null=True)
     bio = models.TextField(null=True)
 
-    avatar = models.ImageField(null=True, default="avatar.svg")
+    avatar = models.ImageField(upload_to='avatars/', default='avatar.svg')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -49,3 +49,36 @@ class Message(models.Model):
 
     def __str__(self):
         return self.body[0:50]
+    
+class Blog(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+
+    image = models.ImageField(upload_to='blog-resources/images/', null=True, blank=True)
+    video = models.FileField(upload_to='blog-resources/videos/', null=True, blank=True)
+
+    link = models.URLField(null=True, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return self.title
+
+class Resource(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    title = models.CharField(max_length=200)
+
+    file = models.FileField(upload_to='room-resources/', null=True, blank=True)
+    link = models.URLField(null=True, blank=True)
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

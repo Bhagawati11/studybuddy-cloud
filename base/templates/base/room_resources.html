@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<main class="layout">
+
+<div class="container">
+
+<div class="layout__box">
+
+<div class="layout__boxHeader">
+<div class="layout__boxTitle">
+
+<a href="{% url 'room' room.id %}">←</a>
+
+<h3>Resources</h3>
+
+</div>
+</div>
+
+<div class="layout__body">
+
+<a class="btn btn--main" href="{% url 'add-resource' room.id %}">
+Add Resource
+</a>
+
+{% for resource in resources %}
+
+<div class="resource-item">
+
+<h4>{{resource.title}}</h4>
+
+<p>Uploaded by @{{resource.uploaded_by.username}}</p>
+
+{% if resource.file %}
+<a href="{{resource.file.url}}" target="_blank">
+Download File
+</a>
+{% endif %}
+
+{% if resource.link %}
+<a href="{{resource.link}}" target="_blank">
+Open Link
+</a>
+{% endif %}
+
+</div>
+
+{% empty %}
+
+<p>No resources uploaded yet.</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+{% endblock %}

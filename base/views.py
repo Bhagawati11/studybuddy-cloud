@@ -6,6 +6,12 @@ from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from .models import Room, Topic, Message, User
 from .forms import RoomForm, UserForm, MyUserCreationForm
+from .models import Room, Topic, Message, User, Blog
+import boto3
+import uuid
+from django.http import JsonResponse
+from django.conf import settings
+from .models import Resource
 
 # Create your views here.
 
@@ -87,6 +93,7 @@ def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all()
     participants = room.participants.all()
+    resources = Resource.objects.filter(room=room)
 
     if request.method == 'POST':
         message = Message.objects.create(
@@ -98,7 +105,7 @@ def room(request, pk):
         return redirect('room', pk=room.id)
 
     context = {'room': room, 'room_messages': room_messages,
-               'participants': participants}
+               'participants': participants,'resources': resources}
     return render(request, 'base/room.html', context)
 
 
@@ -202,3 +209,97 @@ def topicsPage(request):
 def activityPage(request):
     room_messages = Message.objects.all()
     return render(request, 'base/activity.html', {'room_messages': room_messages})
+
+@login_required(login_url='login')
+def createBlog(request):
+
+    if request.method == 'POST':
+
+        print("POST DATA:", request.POST)
+
+        Blog.objects.create(
+            author=request.user,
+            title=request.POST.get('title'),
+            content=request.POST.get('content')
+        )
+
+        return redirect('blogs')
+
+    return render(request, 'base/blog-form.html')
+
+def blogs(request):
+    blogs = Blog.objects.select_related('author')
+    return render(request, 'base/blogs.html', {'blogs': blogs})
+
+def blogDetail(request, pk):
+    blog = Blog.objects.get(id=pk)
+
+    print("BLOG ID:", blog.id)
+    print("BLOG TITLE:", blog.title)
+    print("BLOG CONTENT:", blog.content)
+
+    return render(request, 'base/blog-detail.html', {'blog': blog})
+
+@login_required
+def upload_blog_media(request):
+
+    if request.method == "POST" and request.FILES.get("file"):
+
+        file = request.FILES["file"]
+
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME,
+        )
+
+        file_name = f"blogs/{uuid.uuid4()}_{file.name}"
+
+        s3.upload_fileobj(
+            file,
+            settings.AWS_STORAGE_BUCKET_NAME,
+            file_name,
+            ExtraArgs={"ContentType": file.content_type}
+        )
+
+        file_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_name}"
+
+        return JsonResponse({"url": file_url})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+@login_required(login_url='login')
+def addResource(request, pk):
+
+    room = Room.objects.get(id=pk)
+
+    if request.method == "POST":
+
+        Resource.objects.create(
+            room=room,
+            uploaded_by=request.user,
+            title=request.POST.get("title"),
+            file=request.FILES.get("file"),
+            link=request.POST.get("link")
+        )
+
+        return redirect('room', pk=room.id)
+
+    context = {"room": room}
+    return render(request, "base/resource_form.html", context)
+
+
+
+def roomResources(request, pk):
+
+    room = Room.objects.get(id=pk)
+
+    resources = Resource.objects.filter(room=room)
+
+    context = {
+        "room": room,
+        "resources": resources
+    }
+
+    return render(request, "base/room_resources.html", context)
