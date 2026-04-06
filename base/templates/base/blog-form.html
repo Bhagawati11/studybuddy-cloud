@@ -18,7 +18,7 @@
 
 <div class="layout__body">
 
-<form method="POST" enctype="multipart/form-data">
+<form id="blogForm" method="POST" enctype="multipart/form-data">
 {% csrf_token %}
 
 <div class="form__group">
@@ -66,7 +66,7 @@ function getCookie(name) {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const form = document.querySelector("form");
+  const form = document.getElementById("blogForm");
   const contentField = document.getElementById("content");
 
   const quill = new Quill('#editor', {
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
-
+});
 </script>
 
 </main>
